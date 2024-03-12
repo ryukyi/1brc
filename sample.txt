@@ -1,0 +1,11 @@
+Oslo;-7.2
+Memphis;6.3
+Tokyo;18.2
+Bridgetown;29.5
+Cairns;22.4
+Louisville;9.4
+Bangkok;19.2
+Cracow;33.7
+Tirana;5.4
+Amsterdam;-7.9
+Oslo;-5.0
