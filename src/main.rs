@@ -13,13 +13,13 @@ pub fn read_1billion_rows(path: &str) -> Result<(), std::io::Error> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
 
-    let mut city_temps: HashMap<String, CityTemp> = HashMap::new();
+    let mut city_temps: HashMap<Vec<u8>, CityTemp> = HashMap::new();
 
     for line in reader.lines() {
         let line = line?;
         let parts: Vec<&str> = line.split(';').collect();
         if parts.len() == 2 {
-            let city = parts[0].to_string();
+            let city = parts[0].as_bytes().to_vec();
             if let Ok(temp) = parts[1].parse::<f64>() {
 
                 let city_temp = city_temps.entry(city).or_insert(CityTemp {
@@ -38,9 +38,10 @@ pub fn read_1billion_rows(path: &str) -> Result<(), std::io::Error> {
     }
 
     // second pass for mean
-    for (city, city_temp) in city_temps.iter_mut() {
+    for (city_bytes, city_temp) in city_temps.iter_mut() {
         city_temp.mean_temp = city_temp.acc_temp / city_temp.count_temp as f64;
-        println!("City: {}, Min: {}, Max: {}, Mean: {}", city, city_temp.min_temp, city_temp.max_temp, city_temp.mean_temp);
+        let city_name = String::from_utf8_lossy(city_bytes);
+        println!("City: {}, Min: {}, Max: {}, Mean: {}", city_name, city_temp.min_temp, city_temp.max_temp, city_temp.mean_temp);
     }
     Ok(())
 }
