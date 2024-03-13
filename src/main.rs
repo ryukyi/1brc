@@ -32,11 +32,12 @@ pub fn read_1billion_rows(path: &str) -> Result<(), io::Error> {
             // as an intermediate before using built-in string parse logic to float
             if let Ok(temp_str) = std::str::from_utf8(temp_bytes) {
                 if let Ok(temp) = temp_str.trim_end().parse::<f64>() {
-                    let city_temp = city_temps.entry(city).or_insert(CityTemp {
+                    let city_temp = city_temps.entry(city).or_insert_with(|| CityTemp {
                         acc_temp: 0.0,
                         count_temp: 0,
-                        max_temp: f64::MIN,
-                        min_temp: f64::MAX,
+                        // Set max_temp and min_temp to temp for the first entry
+                        max_temp: temp,
+                        min_temp: temp,
                     });
                     city_temp.acc_temp += temp;
                     city_temp.count_temp += 1;
